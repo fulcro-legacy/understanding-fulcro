@@ -1,6 +1,6 @@
 = Understanding Fulcro
 
-These files go with a http://youtube.com/[YouTube Video].
+These files go with a https://youtu.be/nlT45ikSEOE[YouTube Video].
 
 == Running
 
