@@ -1,0 +1,21 @@
+= Understanding Fulcro
+
+These files go with a http://youtube.com/[YouTube Video].
+
+== Running
+
+Server:
+
+```bash
+$ lein repl
+user=> (go)
+```
+
+Client Compile:
+
+```bash
+$ npm install
+$ shadow-cljs watch cards
+```
+
+Then open http://localhost:3000/cards.html
