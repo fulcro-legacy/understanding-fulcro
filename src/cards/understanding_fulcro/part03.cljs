@@ -16,6 +16,18 @@
 ;;
 ;; will start the server on port 3000
 
+(declare Person)
+
+(defmutation invent-an-age [{:keys [person-id]}]
+  (action [{:keys [state]}]
+    (swap! state assoc-in [:person/by-id person-id :person/age] (rand-int 55))))
+
+(defmutation invent-a-friend [params]
+  (remote [{:keys [state ast]}]
+    (-> ast
+      (m/returning state Person)
+      (m/with-target (t/append-to [:friends])))))
+
 (defsc Address [this {:keys [address/street]}]
   {:query [:db/id :address/street]
    :ident [:address/by-id :db/id]}
@@ -24,14 +36,16 @@
 
 (def ui-address (prim/factory Address {:keyfn :db/id}))
 
-(defsc Person [this {:keys [person/name person/address]}]
-  {:query         [:db/id :person/name {:person/address (prim/get-query Address)}]
+(defsc Person [this {:keys [db/id person/name person/address person/age]}]
+  {:query         [:db/id :person/name :person/age {:person/address (prim/get-query Address)}]
    :ident         [:person/by-id :db/id]
    :initial-state (fn [{:keys [id name]}] {:db/id id :person/name name})}
   (dom/div
-    (dom/h3 "Person")
+    (dom/h4 name)
     (dom/ul
-      (dom/li (str "Name: " name))
+      (dom/li "Age: " (or age "???")
+        (when-not age
+          (dom/button {:onClick #(prim/transact! this `[(invent-an-age {:person-id ~id})])} "Invent Age")))
       (when address
         (dom/li "Address: "
           (ui-address address))))))
@@ -43,6 +57,8 @@
    :initial-state {:friends []}}
   (dom/div
     (dom/h2 "Friends")
+    (dom/button {:onClick #(prim/transact! this `[(invent-a-friend {})])}
+      "Need More Friends!!!")
     (if friends
       (dom/ul
         (map ui-person friends))

@@ -30,7 +30,7 @@
   [] (some-> card-fulcro-app deref :reconciler))
 
 (comment
-  (prim/get-initial-state Person {:id 99 :name "Bo"})
+  (prim/get-initial-state Person {:id 97 :name "Bo"})
   (prim/get-query Person)
 
   (prim/get-initial-state Root {})
@@ -39,7 +39,8 @@
     (prim/query Root {})
     first
     :friend
-    meta)
+    meta
+    )
 
   (prim/tree->db (prim/get-query Root) (prim/get-initial-state Root {}) true)
 
